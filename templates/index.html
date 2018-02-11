@@ -27,8 +27,8 @@
 
                <div class="dropdown">
                   <input class="dropdown-toggle" type="text">
-                  <div class="dropdown-text">Single</div>
-                  <ul class="dropdown-content">
+                  <div id="param-toggle" class="dropdown-text" value="Single">Single</div>
+                  <ul id="param-dropdown" class="dropdown-content">
                     <li><a href="#">Settings</a></li>
                     <li><a href="#">Projects</a></li>
                     <li><a href="#">Log out</a></li>
@@ -58,15 +58,14 @@
                         style="display:none;"></canvas>
                 <canvas width="234" height="142" name="canvas_picker" id="canvas_picker3"
                         style="display:none;"></canvas>
-                <div class="">
-                    <select class="form-control input-sm hide"
-                            id="cluster_color" style="margin-bottom: 2px"
-                            onchange="unitManager.colorChange(this.options[this.selectedIndex].text)">
-                        <option disabled>Select clustering colors...</option>
-                        <option value="Green, Black, Red" selected>Green, Black, Red</option>
-                        <option value="Blue, White, Red">Blue, White, Red</option>
-                        <option value="Red, Orange, Yellow">Red, Orange, Yellow</option>
-                    </select>
+               <div class="dropdown">
+                  <input class="dropdown-toggle" type="text">
+                  <div id="color-toggle" class="dropdown-text" value="Green, Black, Red">Green, Black, Red</div>
+                  <ul id="color-dropdown"  class="dropdown-content">
+                    <li><a href="#" value="Green, Black, Red">Green, Black, Red</a></li>
+                    <li><a href="#" value="Blue, White, Red">Blue, White, Red</a></li>
+                    <li><a href="#" value="Red, Orange, Yellow">Red, Orange, Yellow</a></li>
+                  </ul>
                 </div>
            </div>
 

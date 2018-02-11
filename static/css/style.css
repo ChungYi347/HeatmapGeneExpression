@@ -124,7 +124,8 @@ body {
   line-height: 32px;
   background-color: #eee;
   border: 1px solid #ccc;
-  width: 140px;
+  width: 15em;
+  z-index: 1;
 }
 
 .dropdown-content a {
@@ -132,13 +133,13 @@ body {
 }
 
 .dropdown-content a:hover {
-  background: #e8e8e8;
+  background: #ffffff;
 }
 
 
 .dropdown-toggle:hover ~ .dropdown-text,
 .dropdown-toggle:focus ~ .dropdown-text {
-  background-color: #e8e8e8;
+  background-color: #ffffff;
 }
 
 .dropdown-toggle:focus ~ .dropdown-text {
