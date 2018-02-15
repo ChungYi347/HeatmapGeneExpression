@@ -1,172 +1,79 @@
 <html>
-   <head>
-       <!-- d3 version 4.13.0 -->
-       <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
-       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-       <script type="text/javascript" src="javascripts/data.js"></script>
-       <script type="text/javascript" src="javascripts/ui.js"></script>
-       <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
-       <link rel="stylesheet" href="css/style.css">
+<head>
+    <!-- d3 version 4.13.0 -->
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/clustering.js"></script>
+    <script type="text/javascript" src="javascripts/init.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
-   </head>
-   <body>
-       <span class="fa fa-bars config-toggle"></span>
-       <div id="config" class="config">
-           <span class="label label-info param" style="font-size: 11px">Heatmap Gene Expression Demo</span>
+</head>
+<body>
+<span class="fa fa-bars config-toggle"></span>
+<div id="config" class="config">
+    <span class="label label-info param" style="font-size: 11px">Heatmap Gene Expression Demo</span>
 
-           <div class="param">
-               <span class="label label-default" style="font-size: 11px; margin-bottom: 0.5em;">Clustering </span>
+    <div class="param">
+        <span class="label label-default" style="font-size: 11px; margin-bottom: 0.5em;">Clustering </span>
 
-                <p>Hierarchical Clustering</p>
-           </div>
+        <p>Hierarchical Clustering</p>
+    </div>
 
-           <div class="param">
-               <span class="label label-default" style="font-size: 11px; margin-bottom: 0.5em;">Clustering Parameter</span>
+    <div class="param">
+        <span class="label label-default" style="font-size: 11px; margin-bottom: 0.5em;">Clustering Parameter</span>
 
-               <div class="dropdown">
-                  <input class="dropdown-toggle" type="text">
-                  <div id="param-toggle" class="dropdown-text" value="Single">single</div>
-                  <ul id="param-dropdown" class="dropdown-content">
-                    <li><a href="#">single</a></li>
-                    <li><a href="#">complete</a></li>
-                    <li><a href="#">average</a></li>
-                    <li><a href="#">weighted</a></li>
-                    <li><a href="#">centroid</a></li>
-                    <li><a href="#">median</a></li>
-                    <li><a href="#">ward</a></li>
-                  </ul>
-                </div>
-           </div>
+        <div class="dropdown">
+            <input class="dropdown-toggle" type="text">
+            <div id="param-toggle" class="dropdown-text" value="Single">single</div>
+            <ul id="param-dropdown" class="dropdown-content">
+                <li><a href="#">single</a></li>
+                <li><a href="#">complete</a></li>
+                <li><a href="#">average</a></li>
+                <li><a href="#">weighted</a></li>
+                <li><a href="#">centroid</a></li>
+                <li><a href="#">median</a></li>
+                <li><a href="#">ward</a></li>
+            </ul>
+        </div>
+    </div>
 
-           <div class="param">
-                <div class="btn-group btn-group-justified">
-                    <div class="btn-group">
-                        <!--"#00ff00", "#000000", "#ff0000" default-->
-                        <button style="background-color: #00ff00; width:4.3em" class="btn btn-default" href="#"
-                                id="btn-color1" onclick="unitManager.drawCanvas('canvas_picker1')"></button>
-                    </div>
-                    <div class="btn-group">
-                        <button style="background-color: #000000; width:4.3em" class="btn btn-default" href="#"
-                                id="btn-color2" onclick="unitManager.drawCanvas('canvas_picker2')"></button>
-                    </div>
-                    <div class="btn-group">
-                        <button style="background-color: #ff0000; width:4.3em" class="btn btn-default" href="#"
-                                id="btn-color3" onclick="unitManager.drawCanvas('canvas_picker3')"></button>
-                    </div>
-                </div>
-                <canvas width="234" height="142" name="canvas_picker" id="canvas_picker1"
-                        style="display:none;"></canvas>
-                <canvas width="234" height="142" name="canvas_picker" id="canvas_picker2"
-                        style="display:none;"></canvas>
-                <canvas width="234" height="142" name="canvas_picker" id="canvas_picker3"
-                        style="display:none;"></canvas>
-               <div class="dropdown">
-                  <input class="dropdown-toggle" type="text">
-                  <div id="color-toggle" class="dropdown-text" value="Green, Black, Red">Green, Black, Red</div>
-                  <ul id="color-dropdown"  class="dropdown-content">
-                    <li><a href="#" value="Green, Black, Red">Green, Black, Red</a></li>
-                    <li><a href="#" value="Blue, White, Red">Blue, White, Red</a></li>
-                    <li><a href="#" value="Red, Orange, Yellow">Red, Orange, Yellow</a></li>
-                  </ul>
-                </div>
-           </div>
+    <div class="param">
+        <div class="btn-group btn-group-justified">
+            <div class="btn-group">
+                <!--"#00ff00", "#000000", "#ff0000" default-->
+                <button style="background-color: #00ff00; width:4.3em" class="btn btn-default" href="#"
+                        id="btn-color1" onclick="unitManager.drawCanvas('canvas_picker1')"></button>
+            </div>
+            <div class="btn-group">
+                <button style="background-color: #000000; width:4.3em" class="btn btn-default" href="#"
+                        id="btn-color2" onclick="unitManager.drawCanvas('canvas_picker2')"></button>
+            </div>
+            <div class="btn-group">
+                <button style="background-color: #ff0000; width:4.3em" class="btn btn-default" href="#"
+                        id="btn-color3" onclick="unitManager.drawCanvas('canvas_picker3')"></button>
+            </div>
+        </div>
+        <canvas width="234" height="142" name="canvas_picker" id="canvas_picker1"
+                style="display:none;"></canvas>
+        <canvas width="234" height="142" name="canvas_picker" id="canvas_picker2"
+                style="display:none;"></canvas>
+        <canvas width="234" height="142" name="canvas_picker" id="canvas_picker3"
+                style="display:none;"></canvas>
+        <div class="dropdown">
+            <input class="dropdown-toggle" type="text">
+            <div id="color-toggle" class="dropdown-text" value="Green, Black, Red">Green, Black, Red</div>
+            <ul id="color-dropdown"  class="dropdown-content">
+                <li><a href="#" value="Green, Black, Red">Green, Black, Red</a></li>
+                <li><a href="#" value="Blue, White, Red">Blue, White, Red</a></li>
+                <li><a href="#" value="Red, Orange, Yellow">Red, Orange, Yellow</a></li>
+            </ul>
+        </div>
+    </div>
 
-           <span class="writtenby" style="font-size: 12px; ">Written By ChungYi347</span>
-       </div>
-       <script type="text/javascript">
-          //height of each row in the heatmap
-          var h = 5;
-          //width of each column in the heatmap
-          var w = 70;
-
-          //attach a SVG element to the document's body
-          var mySVG = d3.select("body")
-             .append("svg")
-             .attr("width", (w * cols.length) + 400)
-             .attr("height", (h * rows.length + 100))
-             .style('position','absolute')
-             .style('top',0)
-             .style('left',0);
-
-          //define a color scale using the min and max expression values
-          var colorScale = d3.scaleLinear()
-            .domain([minData, 0, maxData])
-            .range(["blue", "white", "red"]);
-
-          //generate heatmap rows
-          var heatmapRow = mySVG.selectAll(".heatmap")
-             .data(data)
-             .enter().append("g");
-
-          //generate heatmap columns
-          var heatmapRects = heatmapRow
-             .selectAll(".rect")
-             .data(function(d) {
-                return d;
-             }).enter().append("svg:rect")
-             .attr('width',w)
-             .attr('height',h)
-             .attr('x', function(d) {
-                return (d[2] * w) + 25;
-             })
-             .attr('y', function(d) {
-                return (d[1] * h) + 50;
-             })
-             .style('fill',function(d) {
-                return colorScale(d[0]);
-             });
-
-          //label columns
-          var columnLabel = mySVG.selectAll(".colLabel")
-             .data(cols)
-             .enter().append('svg:text')
-             .attr('x', function(d,i) {
-                return ((i + 0.5) * w) + 25;
-             })
-             .attr('y', 30)
-             .attr('class','label')
-             .style('text-anchor','middle')
-             .text(function(d) {return d;});
-
-          //expression value label
-          var expLab = d3.select("body")
-             .append('div')
-             .style('height',23)
-             .style('position','absolute')
-             .style('background','FFE53B')
-             .style('opacity',0.8)
-             .style('top',0)
-             .style('padding',10)
-             .style('left',40)
-             .style('display','none');
-
-          //heatmap mouse events
-          heatmapRow
-             .on('mouseover', function(d,i) {
-                d3.select(this)
-                   .attr('stroke-width',1)
-                   .attr('stroke','black')
-
-                output = '<b>' + rows[i] + '</b><br>';
-                for (var j = 0 , count = data[i].length; j < count; j ++ ) {
-                   output += data[i][j][0] + ", ";
-                }
-                expLab
-                   .style('top',(i * h))
-                   .style('display','block')
-                   .html(output.substring(0,output.length - 3));
-          })
-          .on('mouseout', function(d,i) {
-             d3.select(this)
-                .attr('stroke-width',0)
-                .attr('stroke','none')
-             expLab
-                .style('display','none')
-          });
-
-
-       </script>
-   </body>
+    <span class="writtenby" style="font-size: 12px; ">Written By ChungYi347</span>
+</div>
+</body>
 </html>
