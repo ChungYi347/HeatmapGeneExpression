@@ -1,45 +1,127 @@
-function getElementFontSize( context ) {
-    // Returns a number
-    return parseFloat(
-        // of the computed font-size, so in px
-        getComputedStyle(
-            // for the given context
-            context
-            // or the root <html> element
-            || document.documentElement
-        )
-        .fontSize
-    );
-}
-function convertRem(value) {
-    return convertEm(value);
-}
-function convertEm(value, context) {
-    return value * getElementFontSize(context);
+var stratify = d3.stratify().parentId(function (d) {
+        return d.substring(0, d.lastIndexOf("."));
+    }).id(function (d) {
+        return d;
+    });
+
+function separation(a, b) {
+        return a.parent == b.parent ? 1 : 1;
 }
 
-console.log(convertRem(17));
+function makeTree (treeHeight, data) {
+    var g = d3.select("#clusterSVG")
+        .append("g")
+        .attr("id", "tree")
+        .attr("transform", "translate(30, 50)");
+
+    var tree = d3.cluster()
+        .size([treeHeight, 320])
+        .separation(separation);
+
+    //This code help to find the parent id in this hierarchy, so change this part.
+
+    var root = stratify(data);
+    tree(root);
+
+    var link = g.selectAll(".link").data(root.descendants().slice(1))
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .style("fill", "none")
+        .style("stroke", "#555")
+        .style("stroke-opacity", "0.4")
+        .style("stroke-width", "1.5px")
+        .attr("d", function (d) {
+            return "M" + d.y + "," + d.x
+                + " L " + d.parent.y + " " + d.x + " L " + d.parent.y + " " + d.parent.x;
+        });
+
+    var node = g.selectAll(".node")
+        .data(root.descendants())
+        .enter().append("g")
+        .attr("class", function (d) {
+            return "node" + (d.children ? " node--internal" : " node--leaf");
+        })
+        .attr("transform", function (d) {
+            return "translate(" + d.y + "," + d.x + ")";
+        });
+
+    node.append("circle").attr("r", 2.5)
+        .attr("id", "node");
+
+    node.append("text").attr("dy", 3).attr("x", function (d) {
+        return d.children ? -8 : 8;
+    })
+        .style("text-anchor", function (d) {
+            return d.children ? "end" : "start";
+        })
+        .text(function (d) {
+            return d.id.substring(d.id.lastIndexOf(".") + 1);
+        });
+}
+
+function makeColTree (treeWidth, data) {
+
+    var tree = d3.cluster()
+    //.nodeSize([50, 25])
+        .size([treeWidth, 50])
+        .separation(separation);
+
+    var root = stratify(data);
+    tree(root);
+
+    var link = d3.select("#clusterSVG")
+        .append("g")
+        .attr("id", "colTree")
+        .attr("transform", "translate(" + treeWidth + ", 30)")
+        .selectAll(".link").data(root.descendants().slice(1))
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .style("fill", "none")
+        .style("stroke", "#555")
+        .style("stroke-opacity", "0.4")
+        .style("stroke-width", "1.5px")
+        .attr("d", function (d) {
+            return "M" + d.x + "," + d.y
+                + " L " + d.x + " " + d.parent.y + " L " + d.parent.x + " " + d.parent.y;
+        });
+}
 
 function clustering (req) {
-
     d3.json(req['data_path'], function (error, data) {
-        console.log(req);
+
         //height of each row in the heatmap
         var h = req['h'];
         //width of each column in the heatmap
         var w = req['w'];
 
+        var width = w * data['labels'].length + 100;
+        var height = h * data['names'].length + 100;
+
         console.log(data);
         //attach a SVG element to the document's body
-        var mySVG = d3.select("body")
+        var clusterSVG = d3.select("body")
             .append("div")
+            .style("width", "80%")
             .style("overflow", "scroll")
             .append("svg")
-            .attr("width", window.innerWidth - "15em")
-            .attr("height", (h * data['names'].length + 100))
+            .attr("id", "clusterSVG")
+            .attr("viewbox", "0 0 400 400")
+            .attr("width", "100%")
+            .attr("height", height)
             .style('position', 'absolute')
             .style('top', 0)
-            .style('left', 0);
+            .style('left', 0)
+            .append("g")
+            .attr("id", "heatmap");
+
+        makeTree(height, data['dendrogram']);
+        makeColTree(width, data['col_dendrogram'])
+        var treeWidth = d3.select("#tree").node().getBBox().width;
+
+        var mySVG = d3.select("#heatmap")
+            .attr("transform", "translate(" + treeWidth + ", 0)");
 
         //define a color scale using the min and max expression values
         var colorScale = d3.scaleLinear()
@@ -118,5 +200,6 @@ function clustering (req) {
                 expLab
                     .style('display', 'none')
             });
+
     });
 }
