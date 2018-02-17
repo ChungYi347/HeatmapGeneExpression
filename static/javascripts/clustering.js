@@ -1,18 +1,20 @@
+var colorScale = d3.scaleSequential(d3.interpolatePlasma)
+    .domain([0, 20]);
+
 var stratify = d3.stratify().parentId(function (d) {
-        return d.substring(0, d.lastIndexOf("."));
-    }).id(function (d) {
-        return d;
-    });
+    return d.substring(0, d.lastIndexOf("."));
+}).id(function (d) {
+    return d;
+});
 
 function separation(a, b) {
-        return a.parent == b.parent ? 1 : 1;
+    return a.parent == b.parent ? 1 : 1;
 }
 
 function makeTree (treeHeight, data) {
     var g = d3.select("#clusterSVG")
         .append("g")
-        .attr("id", "tree")
-        .attr("transform", "translate(30, 50)");
+        .attr("id", "tree");
 
     var tree = d3.cluster()
         .size([treeHeight, 320])
@@ -73,7 +75,6 @@ function makeColTree (treeWidth, data) {
     var link = d3.select("#clusterSVG")
         .append("g")
         .attr("id", "colTree")
-        .attr("transform", "translate(" + treeWidth + ", 30)")
         .selectAll(".link").data(root.descendants().slice(1))
         .enter()
         .append("path")
@@ -96,7 +97,7 @@ function clustering (req) {
         //width of each column in the heatmap
         var w = req['w'];
 
-        var width = w * data['labels'].length + 100;
+        var width = w * data['labels'].length;
         var height = h * data['names'].length + 100;
 
         console.log(data);
@@ -118,10 +119,8 @@ function clustering (req) {
 
         makeTree(height, data['dendrogram']);
         makeColTree(width, data['col_dendrogram'])
-        var treeWidth = d3.select("#tree").node().getBBox().width;
 
-        var mySVG = d3.select("#heatmap")
-            .attr("transform", "translate(" + treeWidth + ", 0)");
+        var mySVG = d3.select("#heatmap");
 
         //define a color scale using the min and max expression values
         var colorScale = d3.scaleLinear()
@@ -201,5 +200,13 @@ function clustering (req) {
                     .style('display', 'none')
             });
 
+        var treeWidth = d3.select("#tree").node().getBBox().width + 30;
+        var colTreeHeight = d3.select("#colTree").node().getBBox().height + 50;
+
+        d3.select("#heatmap").attr("transform", "translate(" + treeWidth + ", " + colTreeHeight +")");
+        treeWidth = treeWidth + 25;
+        d3.select("#colTree").attr("transform", "translate(" + treeWidth + ", 50)");
+        colTreeHeight = colTreeHeight + 50;
+        d3.select("#tree").attr("transform", "translate(30," + colTreeHeight + ")");
     });
 }
