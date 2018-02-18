@@ -1,8 +1,9 @@
 function drawCanvas(canvas_id) {
-    for ($i = 1; $i < 4; $i++) {
-        d3.select("#canvas_picker" + $i).style("display", "none");
-    }
-    d3.select("#"+canvas_id).node().style = "display:block; padding: 0; margin:auto;";
+    $("canvas[name*='canvas_picker']").each(function (){
+        $(this)[0].style = "display:none";
+    });
+
+    d3.select("#"+canvas_id).node().style = "display:block; padding: 0; margin:auto; z-index=1;";
     canvasPicker = d3.select("#"+canvas_id).node().getContext("2d");
     // create an image object and get it’s source
     var img = new Image();
@@ -10,10 +11,21 @@ function drawCanvas(canvas_id) {
 
     // copy the image to the canvas
     $(img).on("load", function () {
-        console.log(canvasPicker);
-        console.log(img);
+        img.height = "234";
+        img.width = "142";
         canvasPicker.drawImage(img, 0, 0);
     });
+}
+
+function rgb2hex(red, green, blue) {
+    var rgb = blue | (green << 8) | (red << 16);
+    return '#' + (0x1000000 + rgb).toString(16).slice(1)
+}
+
+function assignBtn(button, color1, color2, color3) {
+    button[0].style.backgroundColor = color1;
+    button[1].style.backgroundColor = color2;
+    button[2].style.backgroundColor = color3;
 }
 
 $(function () {
@@ -37,6 +49,37 @@ $(function () {
         "w" : 20,
         "h" : 20
     };
+
+    var canvasPicker;
+    $("canvas[name='canvas_picker']").click(function (event) {
+        console.log(event);
+        console.log($("#" + event.target.id));
+        canvasPicker = $("#" + event.target.id)[0].getContext("2d");
+        // getting user coordinates
+        var x = event.pageX - $("#" + event.target.id).offset().left;
+        var y = event.pageY - $("#" + event.target.id).offset().top;
+        // getting image data and RGB values
+        var img_data = canvasPicker.getImageData(x, y, 1, 1).data;
+        var R = img_data[0];
+        var G = img_data[1];
+        var B = img_data[2];
+        var hex = rgb2hex(R, G, B);
+        $("#" + event.target.id)[0].style.display = "none";
+        var canvas_id = String(event.target.id.slice(-1));
+        $("#btn-color" + String(canvas_id))[0].style.backgroundColor = hex;
+    });
+
+    $(".dropdown-content li").click(function () {
+        if ($(this)[0].textContent == "Green, Black, Red") {
+            assignBtn($("button[id^=btn-color]"), "#00ff00", "#000000","#ff0000");
+        } else if ($(this)[0].textContent == "Blue, White, Red") {
+            assignBtn($("button[id^=btn-color]"), "#0000ff", "#ffffff","#ff0000");
+        } else {
+            assignBtn($("button[id^=btn-color]"), "#ff0000", "#ffa500","#ffff00");
+        }
+    })
+
     console.log(req);
     clustering(req);
 })
+
