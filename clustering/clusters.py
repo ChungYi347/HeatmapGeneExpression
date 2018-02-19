@@ -3,7 +3,7 @@ import numpy as np
 import scipy.cluster.hierarchy as hier
 import scipy.spatial.distance as dist
 import scipy.stats as stats
-
+import argparse
 
 class HierarchyCluster(object):
     def __init__(self, data, param, axis, delimiter):
@@ -43,7 +43,7 @@ class HierarchyCluster(object):
             dendrogram = self.make_dendrogram(node.get_right(), dendrogram, prev_str)
         return dendrogram
 
-    def cal_linkage(self, data_matrix, row_headers):
+    def cal_linkage(self, data_matrix, row_headers, param):
         req = {
             "ordered_data_matrix" : [],
             "ordered_row_headers" : []
@@ -52,7 +52,7 @@ class HierarchyCluster(object):
         # calculate distance matrix
         distance_matrix = dist.pdist(data_matrix)
         distance_square_matrix = dist.squareform(distance_matrix)
-        linkage_matrix = hier.linkage(distance_square_matrix)
+        linkage_matrix = hier.linkage(distance_square_matrix, param)
 
         rootnode, nodelist = hier.to_tree(linkage_matrix, rd=True)
         dendrogram = [i[1:] for i in self.make_dendrogram(rootnode, [], "")]
@@ -63,6 +63,7 @@ class HierarchyCluster(object):
         row_headers = np.array(row_headers)
         req["ordered_row_headers"] = row_headers[heatmap_order]
         req["dendrogram"] = dendrogram
+        req['heatmap_order'] = heatmap_order
 
         return req
 
@@ -81,7 +82,7 @@ class HierarchyCluster(object):
             col = 0
             row_output = []
             for col_data in row_data:
-                row_output.append([col_data, row, col])
+                row_output.append([col_data, row, int(col_link['heatmap_order'][col])])
                 col += 1
             matrix_output.append(row_output)
             row += 1
@@ -90,13 +91,14 @@ class HierarchyCluster(object):
         return out
 
     def cluster(self):
-        data_matrix, row_headers, col_headers = self.data['data_matrix'], self.data['row_headers'], self.data['col_headers']
+        data_matrix, row_headers, col_headers, param = \
+            self.data['data_matrix'], self.data['row_headers'], self.data['col_headers'], self.param
 
         data_matrix = self.transform(data_matrix)
         col_data_matrix = self.transform(data_matrix.transpose())
 
-        row = self.cal_linkage(data_matrix, row_headers)
-        col = self.cal_linkage(col_data_matrix, col_headers)
+        row = self.cal_linkage(data_matrix, row_headers, param)
+        col = self.cal_linkage(col_data_matrix, col_headers, param)
 
         min_val = np.amin(data_matrix)
         max_val = np.amax(data_matrix)
@@ -147,4 +149,13 @@ def clustering(input_path=None, output_path=None, param="single", axis="both", d
         json.dump(output, wf)
 
 if __name__ == "__main__":
-    clustering("../static/data/data.csv", "../static/data/output.json")
+    parser = argparse.ArgumentParser(description='Get some clustering parameters')
+    parser.add_argument('--input', nargs='?', help='input path', default="../static/data/data.csv")
+    parser.add_argument('--output', nargs='?', help='output path', default="../static/data/output_single.json")
+    parser.add_argument('--param', type=str, help='clustering parameter', default="single")
+    parser.add_argument('--axis', type=str, help='clustering parameter', default="both")
+    parser.add_argument('--delimiter', type=str, help='delimiter csv or tsv', default="csv")
+
+    args = parser.parse_args()
+    print(args)
+    clustering(args.input, args.output, args.param, args.axis, args.delimiter)

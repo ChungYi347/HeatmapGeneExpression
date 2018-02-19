@@ -127,7 +127,7 @@ function clustering (req) {
         //define a color scale using the min and max expression values
         var colorScale = d3.scaleLinear()
             .domain([data['min'], 0, data['max']])
-            .range(["blue", "white", "red"]);
+            .range(req['colors']);
 
         //generate heatmap rows
         var heatmapRow = mySVG.selectAll(".heatmap")

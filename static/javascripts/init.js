@@ -17,8 +17,8 @@ function drawCanvas(canvas_id) {
     });
 }
 
-function rgb2hex(red, green, blue) {
-    var rgb = blue | (green << 8) | (red << 16);
+function rgb2hex(color) {
+    var rgb = color[2] | (color[1] << 8) | (color[0] << 16);
     return '#' + (0x1000000 + rgb).toString(16).slice(1)
 }
 
@@ -26,6 +26,14 @@ function assignBtn(button, color1, color2, color3) {
     button[0].style.backgroundColor = color1;
     button[1].style.backgroundColor = color2;
     button[2].style.backgroundColor = color3;
+}
+
+function assignColor(btnGroup, list) {
+    console.log(btnGroup[0].style.backgroundColor.replace("rgb(", "").replace(")", "").split(","));
+    list[0] = rgb2hex(btnGroup[0].style.backgroundColor.replace("rgb(", "").replace(")", "").split(","));
+    list[1] = rgb2hex(btnGroup[1].style.backgroundColor.replace("rgb(", "").replace(")", "").split(","));
+    list[2] = rgb2hex(btnGroup[2].style.backgroundColor.replace("rgb(", "").replace(")", "").split(","));
+    return list;
 }
 
 $(function () {
@@ -37,6 +45,7 @@ $(function () {
     $("#param-dropdown").on('click', 'li a', function () {
         $("#param-toggle").text($(this).text());
         $("#param-toggle").val($(this).text());
+
     });
     $("#color-dropdown li a").click(function () {
         $("#color-toggle").text($(this).text());
@@ -45,7 +54,8 @@ $(function () {
 
 
     var req = {
-        "data_path" : "../data/output.json",
+        "data_path" : "../data/output_single.json",
+        "colors" : ["#00ff00", "#000000","#ff0000"],
         "w" : 20,
         "h" : 20
     };
@@ -63,13 +73,13 @@ $(function () {
         var R = img_data[0];
         var G = img_data[1];
         var B = img_data[2];
-        var hex = rgb2hex(R, G, B);
+        var hex = rgb2hex([R, G, B]);
         $("#" + event.target.id)[0].style.display = "none";
         var canvas_id = String(event.target.id.slice(-1));
         $("#btn-color" + String(canvas_id))[0].style.backgroundColor = hex;
     });
 
-    $(".dropdown-content li").click(function () {
+    $(".color-dropdown li").click(function () {
         if ($(this)[0].textContent == "Green, Black, Red") {
             assignBtn($("button[id^=btn-color]"), "#00ff00", "#000000","#ff0000");
         } else if ($(this)[0].textContent == "Blue, White, Red") {
@@ -77,7 +87,15 @@ $(function () {
         } else {
             assignBtn($("button[id^=btn-color]"), "#ff0000", "#ffa500","#ffff00");
         }
-    })
+    });
+
+    $("#clusterBtn").click(function () {
+        var btnColors = $("button[id^=btn-color]");
+        req["colors"] = assignColor(btnColors, []);
+        req["data_path"] = "../data/output_" + $("#param-toggle").text() + ".json";
+        $("#clusterSVG g").remove();
+        clustering(req);
+    });
 
     console.log(req);
     clustering(req);
