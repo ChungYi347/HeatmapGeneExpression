@@ -58,6 +58,7 @@ class HierarchyCluster(object):
         dendrogram = [i[1:] for i in self.make_dendrogram(rootnode, [], "")]
 
         heatmap_order = hier.leaves_list(linkage_matrix)
+        req["data_matrix"] = data_matrix
         req["ordered_data_matrix"] = data_matrix[heatmap_order, :]
 
         row_headers = np.array(row_headers)
@@ -78,11 +79,20 @@ class HierarchyCluster(object):
         }
         matrix_output = []
         row = 0
-        for row_data in row_link['ordered_data_matrix']:
+
+        clustered_data = row_link['ordered_data_matrix']
+        if self.axis == "y":
+            clustered_data = row_link['data_matrix']
+
+        col_order = col_link['heatmap_order']
+        if self.axis == "x":
+            col_order = [i for i in range(0, len(col_link['heatmap_order']))]
+
+        for row_data in clustered_data:
             col = 0
             row_output = []
             for col_data in row_data:
-                row_output.append([col_data, row, int(col_link['heatmap_order'][col])])
+                row_output.append([col_data, row, int(col_order[col])])
                 col += 1
             matrix_output.append(row_output)
             row += 1

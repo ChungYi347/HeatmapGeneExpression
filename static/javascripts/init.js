@@ -20,9 +20,12 @@ function drawCanvas(canvas_id) {
 // create continuous color legend
 function makeLegend(selector_id, req) {
     d3.json(req['data_path'], function (error, data) {
+        d3.select("#legendSvg").remove();
+
         var w = 234, h = 50;
         var svg = d3.select(".legend")
             .append("svg")
+            .attr("id", "legendSvg")
             .attr("width", w)
             .attr("height", h)
             .append("g");
@@ -77,6 +80,19 @@ function rgb2hex(color) {
     return '#' + (0x1000000 + rgb).toString(16).slice(1)
 }
 
+function checkRadioBtn() {
+    if (d3.select("#r1").node().checked) {
+        return "both";
+    }
+    else if (d3.select("#r2").node().checked) {
+        return "x";
+    }
+    else if (d3.select("#r3").node().checked) {
+        return "y";
+    }
+}
+
+
 function assignBtn(button, color1, color2, color3) {
     button[0].style.backgroundColor = color1;
     button[1].style.backgroundColor = color2;
@@ -112,7 +128,8 @@ $(function () {
         "data_path" : "../data/output_single.json",
         "colors" : ["#00ff00", "#000000","#ff0000"],
         "w" : 20,
-        "h" : 20
+        "h" : 20,
+        "axis" : "both"
     };
 
     var canvasPicker;
@@ -145,11 +162,16 @@ $(function () {
     });
 
     $("#clusterBtn").click(function () {
+        $("#clusterSVG g").remove();
         var btnColors = $("button[id^=btn-color]");
         req["colors"] = assignColor(btnColors, []);
         req["data_path"] = "../data/output_" + $("#param-toggle").text() + ".json";
-        $("#clusterSVG g").remove();
+        req["axis"] = checkRadioBtn();
+        if (req["axis"] == "x" || req["axis"] == "y"){
+            req["data_path"] = "../data/output_" + $("#param-toggle").text() + "_" + req["axis"] + ".json";
+        }
         makeLegend("#legend1", req);
+        console.log(req);
         clustering(req);
     });
     console.log(req);
