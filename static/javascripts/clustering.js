@@ -1,6 +1,3 @@
-var colorScale = d3.scaleSequential(d3.interpolatePlasma)
-    .domain([0, 20]);
-
 var stratify = d3.stratify().parentId(function (d) {
     return d.substring(0, d.lastIndexOf("."));
 }).id(function (d) {
@@ -93,7 +90,6 @@ function makeColTree (treeWidth, data) {
 
 function clustering (req) {
     d3.json(req['data_path'], function (error, data) {
-
         //height of each row in the heatmap
         var h = req['h'];
         //width of each column in the heatmap

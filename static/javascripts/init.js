@@ -17,6 +17,61 @@ function drawCanvas(canvas_id) {
     });
 }
 
+// create continuous color legend
+function makeLegend(selector_id, req) {
+    d3.json(req['data_path'], function (error, data) {
+        var w = 234, h = 50;
+        var svg = d3.select(".legend")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("g");
+
+        var legend = svg.append("defs")
+            .append("svg:linearGradient")
+            .attr("id", "gradient")
+            .attr("x1", "0%")
+            .attr("y1", "100%")
+            .attr("x2", "100%")
+            .attr("y2", "100%")
+            .attr("spreadMethod", "pad");
+
+        legend.append("stop")
+            .attr("offset", "0%")
+            .attr("stop-color", req["colors"][0])
+            .attr("stop-opacity", 1);
+
+        legend.append("stop")
+            .attr("offset", "50%")
+            .attr("stop-color", req["colors"][1])
+            .attr("stop-opacity", 1);
+
+        legend.append("stop")
+            .attr("offset", "100%")
+            .attr("stop-color", req["colors"][2])
+            .attr("stop-opacity", 1);
+
+        svg.append("rect")
+            .attr("width", w)
+            .attr("height", h-20)
+            .style("fill", "url(#gradient)");
+
+        svg.append("text")
+            .style("font-size", "12px")
+            .style("fill", "#ffffff")
+            .attr("x", "10px")
+            .attr("y", "45px")
+            .text(data["max"].toFixed(2));
+
+        svg.append("text")
+            .style("font-size", "12px")
+            .style("fill", "#ffffff")
+            .attr("x", "200px")
+            .attr("y", "45px")
+            .text(data["min"].toFixed(2))
+    });
+};
+
 function rgb2hex(color) {
     var rgb = color[2] | (color[1] << 8) | (color[0] << 16);
     return '#' + (0x1000000 + rgb).toString(16).slice(1)
@@ -94,10 +149,11 @@ $(function () {
         req["colors"] = assignColor(btnColors, []);
         req["data_path"] = "../data/output_" + $("#param-toggle").text() + ".json";
         $("#clusterSVG g").remove();
+        makeLegend("#legend1", req);
         clustering(req);
     });
-
     console.log(req);
+    makeLegend("#legend1", req);
     clustering(req);
 })
 

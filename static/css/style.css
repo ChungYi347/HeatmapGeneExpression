@@ -42,8 +42,9 @@ body {
 
 .legend {
   position: absolute;
-  right:0px;
-  margin-bottom:100px;
+  left:15px;
+  bottom:10px;
+  margin-bottom:10px;
   z-index: 1;
 }
 
