@@ -96,22 +96,19 @@ function clustering (req) {
         var w = req['w'];
 
         var width = w * data['labels'].length;
-        var height = h * data['names'].length + 100;
+        var height = h * data['names'].length;
 
         console.log(data);
         //attach a SVG element to the document's body
-        var clusterSVG = d3.select("body")
-            .append("div")
-            .style("width", "80%")
-            .style("overflow", "scroll")
+        var clusterSVG = d3.select(".heatmap")
             .append("svg")
             .attr("id", "clusterSVG")
-            .attr("viewbox", "0 0 400 400")
+            .attr("viewbox", "0 0 200 400")
             .attr("width", "100%")
-            .attr("height", height)
-            .style('position', 'absolute')
-            .style('top', 0)
-            .style('left', 0)
+            .attr("height", height + 300)
+            //.style('position', 'absolute')
+            //.style('top', 0)
+            //.style('left', 0)
             .append("g")
             .attr("id", "heatmap");
 

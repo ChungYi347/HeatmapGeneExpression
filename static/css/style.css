@@ -170,3 +170,9 @@ body {
 .param{
   margin-bottom: 1em;
 }
+
+.heatmap{
+  width:80%;
+  height:100%;
+  overflow: scroll;
+}
