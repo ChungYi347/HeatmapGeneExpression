@@ -151,10 +151,28 @@ function clustering (req) {
         var columnLabel = mySVG.selectAll(".colLabel")
             .data(data['labels'])
             .enter().append('svg:text')
-            .attr('x', function (d, i) {
-                return ((i + 0.5) * w) + 25;
+            .attr('y', function (d, i) {
+                return ((i + 0.5) * w + 29);
             })
-            .attr('y', 30)
+            .attr('x', -10 )
+            .attr('class', 'label')
+            .style('transform', 'rotate(-90deg)')
+            .style('text-anchor', 'middle')
+            .text(function (d) {
+                return d;
+            });
+
+        var colLabelHeight = d3.select(".label").node().getBBox().width;
+
+        var element_length = data['clustered_data'][0].length
+        //label rows
+        var rowLabel = mySVG.selectAll(".rowLabel")
+            .data(data['names'])
+            .enter().append('svg:text')
+            .attr('y', function (d, i) {
+                return ((i + 0.5) * h + colLabelHeight - 10);
+            })
+            .attr('x', element_length * w + 80)
             .attr('class', 'label')
             .style('text-anchor', 'middle')
             .text(function (d) {
@@ -202,7 +220,7 @@ function clustering (req) {
 
         d3.select("#heatmap").attr("transform", "translate(" + treeWidth + ", " + colTreeHeight +")");
         treeWidth = treeWidth + 25;
-        d3.select("#colTree").attr("transform", "translate(" + treeWidth + ", 50)");
+        d3.select("#colTree").attr("transform", "translate(" + treeWidth + ", " + String(Number(colLabelHeight) - 50) + ")");
         colTreeHeight = colTreeHeight + 50;
         d3.select("#tree").attr("transform", "translate(30," + colTreeHeight + ")");
     });
