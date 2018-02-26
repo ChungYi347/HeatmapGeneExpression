@@ -143,7 +143,9 @@ function clustering (req) {
             })
             .style('fill', function (d) {
                 return colorScale(d[0]);
-            });
+            })
+            .style('stroke-width', '0.2')
+            .style('stroke','white');
 
         //label columns
         var columnLabel = mySVG.selectAll(".colLabel")
