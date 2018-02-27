@@ -98,7 +98,6 @@ function clustering (req) {
         var width = w * data['labels'].length;
         var height = h * data['names'].length;
 
-        console.log(data);
         //attach a SVG element to the document's body
         var clusterSVG = d3.select(".heatmap")
             .append("svg")
@@ -154,7 +153,7 @@ function clustering (req) {
             .attr('y', function (d, i) {
                 return ((i + 0.5) * w + 29);
             })
-            .attr('x', -10 )
+            .attr('x', -30)
             .attr('class', 'label')
             .style('transform', 'rotate(-90deg)')
             .style('text-anchor', 'middle')
@@ -170,7 +169,7 @@ function clustering (req) {
             .data(data['names'])
             .enter().append('svg:text')
             .attr('y', function (d, i) {
-                return ((i + 0.5) * h + colLabelHeight - 10);
+                return ((i + 0.5) * h + colLabelHeight + 35);
             })
             .attr('x', element_length * w + 30)
             .attr('class', 'label')
@@ -216,11 +215,13 @@ function clustering (req) {
             });
 
         var treeWidth = d3.select("#tree").node().getBBox().width + 30;
-        var colTreeHeight = d3.select("#colTree").node().getBBox().height + 50;
+        var colTreeHeight = d3.select("#colTree").node().getBBox().height + 10;
 
+        var heatmapY = d3.select("#heatmap").node().getBBox();
+        var colTreeY = d3.select("#colTree").node().getBBox();
         d3.select("#heatmap").attr("transform", "translate(" + treeWidth + ", " + colTreeHeight +")");
         treeWidth = treeWidth + 25;
-        d3.select("#colTree").attr("transform", "translate(" + treeWidth + ", " + String(Number(colLabelHeight) - 50) + ")");
+        d3.select("#colTree").attr("transform", "translate(" + treeWidth + ", " + String(Number(colLabelHeight)) + ")");
         colTreeHeight = colTreeHeight + 50;
         d3.select("#tree").attr("transform", "translate(30," + colTreeHeight + ")");
     });

@@ -170,6 +170,8 @@ $(function () {
         if (req["axis"] == "x" || req["axis"] == "y"){
             req["data_path"] = "../data/output_" + $("#param-toggle").text() + "_" + req["axis"] + ".json";
         }
+        $("#clusterSVG").remove();
+
         makeLegend("#legend1", req);
         console.log(req);
         clustering(req);

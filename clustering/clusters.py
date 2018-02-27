@@ -11,6 +11,7 @@ class HierarchyCluster(object):
         self.param = param
         self.axis = axis
         self.delimiter = delimiter
+        self.dendrogram = []
 
     def chk_log2(self, avg_quan_val):
         if (avg_quan_val[.99] > 100) or (avg_quan_val[1.0] - avg_quan_val[0.0] > 50 \
@@ -35,13 +36,31 @@ class HierarchyCluster(object):
         data_matrix = stats.zscore(data_matrix, 1, 1)
         return data_matrix
 
-    def make_dendrogram(self, node, dendrogram, prev_str):
-        prev_str += "." + str(node.get_id())
-        dendrogram.append(prev_str)
+    def make_dendrogram(self, tree, p):
+        path = p[:]
+        if tree.is_leaf():
+            path.append(str(tree.get_id()))
+            self.dendrogram.append('.'.join(path))
+        else:
+            path.append(str(tree.get_id()))
+            self.dendrogram.append('.'.join(path))
+
+            left = tree.get_left()
+            if left:
+                self.make_dendrogram(left, path)
+            right = tree.get_right()
+            if right:
+                self.make_dendrogram(right, path)
+    """
+    def make_dendrogram(self, node):
         if node.is_leaf() == False:
-            dendrogram = self.make_dendrogram(node.get_left(), dendrogram, prev_str)
-            dendrogram = self.make_dendrogram(node.get_right(), dendrogram, prev_str)
-        return dendrogram
+            self.make_dendrogram(node.get_left())
+            self.make_dendrogram(node.get_right())
+        else:
+            return [node.get_id()]
+
+        print(self.dendrogram)
+    """
 
     def cal_linkage(self, data_matrix, row_headers, param):
         req = {
@@ -55,7 +74,9 @@ class HierarchyCluster(object):
         linkage_matrix = hier.linkage(distance_square_matrix, param)
 
         rootnode, nodelist = hier.to_tree(linkage_matrix, rd=True)
-        dendrogram = [i[1:] for i in self.make_dendrogram(rootnode, [], "")]
+        self.dendrogram = []
+        #dendrogram = [i[1:] for i in self.make_dendrogram(rootnode, [])]
+        self.make_dendrogram(rootnode, [])
 
         heatmap_order = hier.leaves_list(linkage_matrix)
         req["data_matrix"] = data_matrix
@@ -63,7 +84,7 @@ class HierarchyCluster(object):
 
         row_headers = np.array(row_headers)
         req["ordered_row_headers"] = row_headers[heatmap_order]
-        req["dendrogram"] = dendrogram
+        req["dendrogram"] = self.dendrogram
         req['heatmap_order'] = heatmap_order
 
         return req
@@ -124,7 +145,7 @@ def clustering(input_path=None, output_path=None, param="single", axis="both", d
 
     if input_path == None:
         # open data csv file
-        with open("../static/data/data.csv", "r") as rf:
+        with open("../static/data/Spellman_100.csv", "r") as rf:
             # read data file
             file = rf.read().splitlines()
     else:
@@ -160,7 +181,7 @@ def clustering(input_path=None, output_path=None, param="single", axis="both", d
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Get some clustering parameters')
-    parser.add_argument('--input', nargs='?', help='input path', default="../static/data/data.csv")
+    parser.add_argument('--input', nargs='?', help='input path', default="../static/data/Spellman_100.csv")
     parser.add_argument('--output', nargs='?', help='output path', default="../static/data/output_single.json")
     parser.add_argument('--param', type=str, help='clustering parameter', default="single")
     parser.add_argument('--axis', type=str, help='clustering parameter', default="both")
