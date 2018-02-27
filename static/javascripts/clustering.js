@@ -172,9 +172,9 @@ function clustering (req) {
             .attr('y', function (d, i) {
                 return ((i + 0.5) * h + colLabelHeight - 10);
             })
-            .attr('x', element_length * w + 80)
+            .attr('x', element_length * w + 30)
             .attr('class', 'label')
-            .style('text-anchor', 'middle')
+            .style('text-anchor', 'left')
             .text(function (d) {
                 return d;
             });
