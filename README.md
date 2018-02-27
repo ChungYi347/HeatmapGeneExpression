@@ -1,4 +1,14 @@
 # Heatmap Gene Expression Visualization
+Heatmap and Dendrogram visualization of the normalized gene expression using hierarchical clustering
+
+<Heatmap>
+The gene expression data is displayed by colored squares in the heatmap. 
+Green : Up-regulation
+Black : UNchanged expression
+Red : Down-regulation
+
+<Dendrogram>
+The dendrogram visualizes hierarchical clusting result which build a hierarchy of clusters.
 
 ## Screenshot
 ## Setup
