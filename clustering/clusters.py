@@ -145,7 +145,7 @@ def clustering(input_path=None, output_path=None, param="single", axis="both", d
 
     if input_path == None:
         # open data csv file
-        with open("../static/data/Spellman_100.csv", "r") as rf:
+        with open("../static/data/Spellman_30.csv", "r") as rf:
             # read data file
             file = rf.read().splitlines()
     else:
@@ -181,7 +181,7 @@ def clustering(input_path=None, output_path=None, param="single", axis="both", d
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Get some clustering parameters')
-    parser.add_argument('--input', nargs='?', help='input path', default="../static/data/Spellman_100.csv")
+    parser.add_argument('--input', nargs='?', help='input path', default="../static/data/Spellman_30.csv")
     parser.add_argument('--output', nargs='?', help='output path', default="../static/data/output_single.json")
     parser.add_argument('--param', type=str, help='clustering parameter', default="single")
     parser.add_argument('--axis', type=str, help='clustering parameter', default="both")

@@ -12,4 +12,6 @@ with open("../static/data/gene_data.csv", "w") as wf:
         for j in range(0, cond):
             gene.append(round(random.random() * 10000, 3))
         gene_list.append(gene)
-    print(gene_list)
+
+    for i in gene_list:
+        csv_writer.writerow(i)

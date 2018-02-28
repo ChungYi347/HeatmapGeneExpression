@@ -48,17 +48,6 @@ function makeTree (treeHeight, data) {
     node.append("circle").attr("r", 2.5)
         .attr("id", "node");
 
-    /*
-    node.append("text").attr("dy", 3).attr("x", function (d) {
-        return d.children ? -8 : 8;
-    })
-        .style("text-anchor", function (d) {
-            return d.children ? "end" : "start";
-        })
-        .text(function (d) {
-            return d.id.substring(d.id.lastIndexOf(".") + 1);
-        });
-    */
 }
 
 function makeColTree (treeWidth, data) {
