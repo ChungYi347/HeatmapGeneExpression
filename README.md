@@ -11,8 +11,11 @@ Red : Down-regulation <br />
 The dendrogram visualizes hierarchical clusting result which build a hierarchy of clusters.<br />
 
 ## Screenshot
+### Data : Spellman (30), Cluster Parameter : single, Axis : Both, Color : RGB
 ![Alt text](/static/img/SpellmanRBG.png)
+### Data : Spellman (30), Cluster Parameter : complete, Axis : Both, Color : ROY
 ![Alt text](/static/img/SpellmanROY.png)
+### Data : Spellman (30), Cluster Parameter : median, Axis : Both, Color : RWB
 ![Alt text](/static/img/SpellmanRWB.png)
 
 ## Setup
