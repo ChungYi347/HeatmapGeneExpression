@@ -25,4 +25,7 @@ The dendrogram visualizes hierarchical clusting result which build a hierarchy o
 * pandas 0.18.1
 * numpy 1.12.1
 
-Data : <http://www.exploredata.net/Downloads/Gene-Expression-Data-Set>
+## Reference
+* Hierarchical Clustering and Heatmap : http://blog.nextgenetics.net/?e=44
+* Dendrogram : http://bl.ocks.org/mbostock/4063570
+* Data : <http://www.exploredata.net/Downloads/Gene-Expression-Data-Set>
