@@ -11,7 +11,9 @@ Red : Down-regulation <br />
 The dendrogram visualizes hierarchical clusting result which build a hierarchy of clusters.<br />
 
 ## Screenshot
-
+![Alt text](/static/img/SpellmanRBG.png)
+![Alt text](/static/img/SpellmanROY.png)
+![Alt text](/static/img/SpellmanRWB.png)
 
 ## Setup
 ### Prerequisites
